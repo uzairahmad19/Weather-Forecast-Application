@@ -27,26 +27,25 @@ public class CurrentWeatherWindow extends JFrame {
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
-        // Input Panel
+
         JPanel inputPanel = new JPanel(new FlowLayout());
         inputPanel.setOpaque(false);
 
-        // Create and customize city field
-        cityField = new JTextField(20);
-        cityField.setFont(new Font("SansSerif", Font.PLAIN, 18)); // Increase font size for city field
-        cityField.setPreferredSize(new Dimension(250, 40)); // Increase width and height of city field
 
-        // Create and customize button
+        cityField = new JTextField(20);
+        cityField.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        cityField.setPreferredSize(new Dimension(250, 40));
+
+
         JButton getWeatherBtn = new JButton("Get Weather");
-        getWeatherBtn.setFont(new Font("SansSerif", Font.PLAIN, 18)); // Increase font size for button
-        getWeatherBtn.setPreferredSize(new Dimension(200, 40)); // Increase size of button
+        getWeatherBtn.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        getWeatherBtn.setPreferredSize(new Dimension(200, 40));
         getWeatherBtn.addActionListener(e -> fetchWeather());
 
 
 
-        // Set the font color of the "Enter City" label to white
         JLabel cityLabel = new JLabel("Enter City:");
-        cityLabel.setForeground(Color.BLACK); // Change label color to white
+        cityLabel.setForeground(Color.BLACK);
         cityLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
         inputPanel.add(cityLabel);
@@ -54,7 +53,6 @@ public class CurrentWeatherWindow extends JFrame {
         inputPanel.add(getWeatherBtn);
         background.add(inputPanel, BorderLayout.NORTH);
 
-        // Weather Info Panel
         JPanel infoPanel = new JPanel(new GridLayout(5, 1));
         infoPanel.setOpaque(false);
         infoPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
@@ -63,7 +61,7 @@ public class CurrentWeatherWindow extends JFrame {
         conditionLabel = new JLabel("Condition: ");
         humidityLabel = new JLabel("Humidity: ");
         windLabel = new JLabel("Wind Speed: ");
-        iconLabel = new JLabel(); // for weather icon
+        iconLabel = new JLabel();
 
         Font font = new Font("SansSerif", Font.BOLD, 18);
         for (JLabel label : new JLabel[]{tempLabel, conditionLabel, humidityLabel, windLabel}) {
@@ -117,19 +115,19 @@ public class CurrentWeatherWindow extends JFrame {
             humidityLabel.setText("Humidity: " + main.getInt("humidity") + "%");
             windLabel.setText("Wind Speed: " + wind.getDouble("speed") + " m/s");
 
-            // Weather Icon - Load from local resources/icons folder
-            String iconPath = "resources/icons/" + iconId + ".gif";
-            File iconFile = new File(iconPath);
-
-            if (iconFile.exists()) {
-                ImageIcon animatedIcon = new ImageIcon(iconPath);
-                Image scaled = animatedIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-                iconLabel.setIcon(new ImageIcon(scaled));
-                iconLabel.setText(""); // Clear any fallback text
-            } else {
-                iconLabel.setIcon(null);
-                iconLabel.setText("No icon found");
-            }
+//            // Weather Icon - Load from local resources/icons folder
+//            String iconPath = "resources/icons/" + iconId + ".gif";
+//            File iconFile = new File(iconPath);
+//
+//            if (iconFile.exists()) {
+//                ImageIcon animatedIcon = new ImageIcon(iconPath);
+//                Image scaled = animatedIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+//                iconLabel.setIcon(new ImageIcon(scaled));
+//                iconLabel.setText(""); // Clear any fallback text
+//            } else {
+//                iconLabel.setIcon(null);
+//                iconLabel.setText("No icon found");
+//            }
 
             // Save to DB using JDBC
             saveToDatabase(city, temperature, condition);
@@ -142,8 +140,8 @@ public class CurrentWeatherWindow extends JFrame {
 
     private void saveToDatabase(String city, double temperature, String condition) {
         String url = "jdbc:mysql://localhost:3306/weather_app";
-        String user = "root"; // your DB username
-        String password = "root"; // your DB password
+        String user = "root";
+        String password = "root";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -156,8 +154,20 @@ public class CurrentWeatherWindow extends JFrame {
             stmt.setString(3, condition);
 
             stmt.executeUpdate();
+
+            String deleteOldEntries = """
+                    DELETE FROM weather_history 
+                    WHERE id NOT IN (
+                        SELECT id FROM (
+                            SELECT id FROM weather_history ORDER BY search_time DESC LIMIT 50
+                        ) AS temp
+                    );
+                """;
+
+            PreparedStatement deleteStmt = conn.prepareStatement(deleteOldEntries);
+            deleteStmt.executeUpdate();
             conn.close();
-            System.out.println("Weather data saved to database.");
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to save to database.");

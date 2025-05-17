@@ -18,7 +18,6 @@ public class AIChatWindow extends JFrame {
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
-        // 🧠 Chat display area
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -28,7 +27,6 @@ public class AIChatWindow extends JFrame {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
 
-        // 🎤 Input panel
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(false);
         userInput = new JTextField();

@@ -11,7 +11,7 @@ public class ForecastWindow extends JFrame {
 
     private JTextField cityField;
     private JPanel forecastPanel;
-    private final String API_KEY = "6d284285726f487e84a82e896ca1bfed"; // Replace with your API key
+    private final String API_KEY = "6d284285726f487e84a82e896ca1bfed";
 
     public ForecastWindow() {
         setTitle("5-Day Forecast");
@@ -19,24 +19,26 @@ public class ForecastWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Set background image
-        ImageIcon bgIcon = new ImageIcon("resources/forecast_bg.jpg"); // Place image in 'resources' folder
+        //background
+        ImageIcon bgIcon = new ImageIcon("resources/forecast_bg.jpg");
         JLabel background = new JLabel(bgIcon);
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
-        // Top input panel
+
         JPanel inputPanel = new JPanel(new FlowLayout());
         inputPanel.setOpaque(false);
         cityField = new JTextField(20);
         JButton fetchButton = new JButton("Get Forecast");
         fetchButton.addActionListener(e -> fetchForecast());
-        inputPanel.add(new JLabel("Enter City:"));
+        JLabel enterCity = new JLabel("Enter City:");
+        enterCity.setForeground(Color.WHITE);
+        inputPanel.add(enterCity);
         inputPanel.add(cityField);
         inputPanel.add(fetchButton);
         background.add(inputPanel, BorderLayout.NORTH);
 
-        // Forecast display panel
+
         forecastPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         forecastPanel.setOpaque(false);
         forecastPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
@@ -94,13 +96,13 @@ public class ForecastWindow extends JFrame {
                 JSONObject weather = forecastObj.getJSONArray("weather").getJSONObject(0);
                 String iconId = weather.getString("icon");
 
-                // Load icon from OpenWeatherMap
+
                 URL iconUrl = new URL("https://openweathermap.org/img/wn/" + iconId + "@2x.png");
                 ImageIcon icon = new ImageIcon(iconUrl);
                 Image scaledImg = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
                 icon = new ImageIcon(scaledImg);
+//
 
-                // Card layout with icon
                 JPanel card = new JPanel(new BorderLayout());
                 card.setBackground(new Color(255, 255, 255, 180));
                 card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -118,7 +120,7 @@ public class ForecastWindow extends JFrame {
                 textPanel.setOpaque(false);
                 textPanel.add(dateLabel);
                 textPanel.add(detailsLabel);
-
+//
                 card.add(iconLabel, BorderLayout.WEST);
                 card.add(textPanel, BorderLayout.CENTER);
 

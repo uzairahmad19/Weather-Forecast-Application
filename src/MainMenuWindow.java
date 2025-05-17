@@ -12,8 +12,8 @@ public class MainMenuWindow extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Load background image
-        ImageIcon backgroundIcon = new ImageIcon("resources/background.jpg"); // Put your background image path here
+        //background
+        ImageIcon backgroundIcon = new ImageIcon("resources/background.jpg");
         JLabel backgroundLabel = new JLabel(backgroundIcon);
         backgroundLabel.setLayout(new BorderLayout());
         setContentPane(backgroundLabel);
@@ -69,9 +69,5 @@ public class MainMenuWindow extends JFrame {
                 case "Exit" -> System.exit(0);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        new MainMenuWindow();
     }
 }

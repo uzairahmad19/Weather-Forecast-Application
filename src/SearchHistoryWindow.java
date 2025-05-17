@@ -11,13 +11,12 @@ public class SearchHistoryWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Background image
-        ImageIcon bg = new ImageIcon("resources/history_bg.jpg"); // make sure this image exists
+
+        ImageIcon bg = new ImageIcon("resources/history_bg.jpg");
         JLabel background = new JLabel(bg);
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
-        // Table to show search history
         String[] columns = {"City", "Temperature (°C)", "Condition", "Search Time"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         JTable table = new JTable(model);
@@ -30,7 +29,6 @@ public class SearchHistoryWindow extends JFrame {
 
         background.add(scrollPane, BorderLayout.CENTER);
 
-        // Load history from DB
         loadSearchHistory(model);
 
         setVisible(true);
@@ -38,15 +36,15 @@ public class SearchHistoryWindow extends JFrame {
 
     private void loadSearchHistory(DefaultTableModel model) {
         String url = "jdbc:mysql://localhost:3306/weather_app";
-        String user = "root"; // Your DB user
-        String password = "root"; // Your DB password
+        String user = "root";
+        String password = "root";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(url, user, password);
 
             String sql = "SELECT city, temperature, `condition`, search_time " +
-                    "FROM weather_history ORDER BY search_time DESC LIMIT 10";
+                    "FROM weather_history ORDER BY search_time DESC LIMIT 15";
 
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
